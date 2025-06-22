@@ -1,0 +1,143 @@
+/* General Setup */
+body { 
+    font-family: 'Segoe UI', sans-serif; 
+    background: #f0f2f5; 
+    margin: 0;
+}
+h2 { 
+    color: #1a237e; 
+    text-align: center; 
+    padding: 20px;
+}
+.chart-container {
+    padding: 20px;
+    overflow: auto; /* Allow scrolling for large charts */
+    text-align: left; /* Align chart to the left */
+}
+
+/* --- Core LTR Tree Structure & Lines --- */
+.tree {
+    display: inline-block; /* Allow the container to size to its content */
+    white-space: nowrap; /* Prevent wrapping of tree elements */
+}
+.tree ul {
+    padding-left: 25px;
+    position: relative;
+    list-style-type: none;
+    margin: 0;
+    /* LTR Change: Children are stacked vertically */
+    display: flex;
+    flex-direction: column;
+}
+.tree li {
+    list-style-type: none;
+    position: relative;
+    padding: 10px 0 10px 25px;
+    /* LTR Change: The node and its children list are arranged horizontally */
+    display: flex;
+    align-items: center; /* Vertically center node with connector */
+}
+
+/* --- Connector Lines --- */
+/* The vertical line connecting all children of a node */
+.tree ul::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-left: 2px solid #ccc;
+    width: 0;
+    height: 100%;
+}
+/* The horizontal line from the vertical trunk to the child node */
+.tree li::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-top: 2px solid #ccc;
+    width: 25px;
+    height: 0;
+    margin-top: -1px; /* Center the 2px border */
+}
+
+/* --- Line Cleanup for Edges --- */
+/* Hide vertical line on the root node's list */
+.tree > ul::before {
+    display: none;
+}
+/* Round the top of the vertical line for the first child */
+.tree li:first-child::before {
+    border-radius: 5px 0 0 0;
+}
+.tree li:first-child::after {
+     content: '';
+     position: absolute;
+     top: 0;
+     left: 0;
+     height: 50%;
+     width: 2px;
+     background: #f0f2f5; /* Use body background to "erase" the top part of the line */
+}
+/* Round the bottom of the vertical line for the last child */
+.tree li:last-child::before {
+    border-radius: 0 0 0 5px;
+}
+.tree li:last-child::after {
+     content: '';
+     position: absolute;
+     top: 50%;
+     left: 0;
+     height: 50%;
+     width: 2px;
+     background: #f0f2f5; /* Use body background to "erase" the bottom part of the line */
+}
+/* A single child doesn't need the vertical trunk line */
+.tree li:only-child::after {
+    display: none;
+}
+
+/* --- Node Styling --- */
+.node { 
+    padding: 15px; 
+    border-radius: 8px; 
+    text-align: center;
+    min-width: 220px;
+    max-width: 280px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 1;
+    background: #fff; /* Give nodes a solid background to sit on top of lines */
+    flex-shrink: 0; /* Prevent node from shrinking */
+    cursor: pointer; /* Change cursor on all nodes */
+}
+.node.leaf {
+    cursor: default; /* Leaf nodes (no children) aren't clickable */
+}
+
+/* Specific Node Type Styles */
+.node.medical-labs { background: #ffebee; border: 2px solid #c62828; }
+.node.clover { background: #f3e5f5; border: 2px solid #7b1fa2; }
+.node.clinic { background: #e3f2fd; border: 2px solid #1976d2; }
+.node.floor { background: #e8f5e9; border: 2px solid #388e3c; }
+.node.clinic-code { background: #fffde7; border: 2px solid #f9a825; min-width: 200px; }
+
+/* Typography within nodes */
+.node h3, .node h4, .node h5 { margin: 0; padding: 0; font-size: 1.1em; }
+.node small { display: block; margin-top: 5px; color: #555; }
+
+/* --- NEW: Interactivity Styles --- */
+.toggle-btn {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #555;
+    user-select: none; /* Prevent text selection on click */
+}
+
+/* When a list item is collapsed, hide its child list (the 'ul') */
+.tree li.collapsed > ul {
+    display: none;
+}
